@@ -1,5 +1,6 @@
 function RegexParser() {}
 RegexParser.parse = function(regex) {
+  console.log(RegexParser.tokenize(regex));
   var nfa = new NFA('ab');
   var emptyContext = nfa.startState();
   var context = emptyContext.finalize();
@@ -40,24 +41,15 @@ RegexParser.tokenize = function(regex) {
       var openPar = stack.pop();
       if (!stack.length) {
         var insideParens = regex.substring(openPar + 1, i);
-        tokens.push(new Token('regex',insideParens));
+        tokens.push({type: 'regex', content: insideParens});
       }
     } else {
       if (!stack.length) {
-        tokens.push(new Token('symbol', symbol));
+        tokens.push({type: 'symbol', content: symbol});
       }
     }
   }
   return tokens;
-}
-
-
-
-
-
-function Token(type, content) {
-  this.type = type; 
-  this.content = content;
 }
 
 
