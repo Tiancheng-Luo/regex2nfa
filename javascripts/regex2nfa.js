@@ -14,6 +14,9 @@ RegexParser.parse = function(regex) {
     } else if (symbol == '*') {
       context.transition(emptyContext, '~');
       emptyContext.transition(context, '~');
+    } else if (symbol == '+') {
+      emptyContext = nfa.startState();
+      context = emptyContext;
     }
   }
   return nfa;
