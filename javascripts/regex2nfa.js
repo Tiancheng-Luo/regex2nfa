@@ -2,15 +2,16 @@ function RegexParser() {}
 RegexParser.parse = function(regex) {
   var nfa = new NFA('ab');
   var emptyContext = nfa.startState();
-  var context = emptyContext;
+  var context = emptyContext.finalize();
+
   for (var i = 0; i < regex.length; i++) {
     var symbol = regex.charAt(i);
     if (nfa.alphabetContains(symbol)) {
       emptyContext = nfa.addState();
       var state = nfa.addState();
-      context.transition(emptyContext, '~');
+      context.unfinalize().transition(emptyContext, '~');
       emptyContext.transition(state,  symbol);
-      context = state;
+      context = state.finalize();
     } else if (symbol == '*') {
       context.transition(emptyContext, '~');
       emptyContext.transition(context, '~');
@@ -60,6 +61,7 @@ NFA.prototype.generateStateLabel = function() {
 function State(label) {
   this.label = label;
   this.transitions = {};
+  this.final = false;
 }
 
 State.prototype.transition = function(state, symbol) {
@@ -67,4 +69,15 @@ State.prototype.transition = function(state, symbol) {
     this.transitions[symbol] = [];
   }
   this.transitions[symbol].push(state);
+  return this;
+}
+
+State.prototype.finalize = function() {
+  this.final = true;
+  return this;
+}
+
+State.prototype.unfinalize = function() {
+  this.final = false;
+  return this;
 }
