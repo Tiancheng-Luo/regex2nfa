@@ -3,21 +3,27 @@ RegexParser.parse = function(regex) {
   var nfa = new NFA('ab');
   var emptyContext = nfa.startState();
   var context = emptyContext.finalize();
+  var tokens = RegexParser.tokenize(regex);
 
-  for (var i = 0; i < regex.length; i++) {
-    var symbol = regex.charAt(i);
-    if (nfa.alphabetContains(symbol)) {
-      emptyContext = nfa.addState();
-      var state = nfa.addState();
-      context.unfinalize().transition(emptyContext, '~');
-      emptyContext.transition(state,  symbol);
-      context = state.finalize();
-    } else if (symbol == '*') {
-      context.transition(emptyContext, '~');
-      emptyContext.transition(context, '~');
-    } else if (symbol == '+') {
-      emptyContext = nfa.startState();
-      context = emptyContext;
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i];
+    if (token.type == 'symbol') {
+      if (nfa.alphabetContains(token.content)) {
+        emptyContext = nfa.addState();
+        var state = nfa.addState();
+        context.unfinalize().transition(emptyContext, '~');
+        emptyContext.transition(state, token.content);
+        context = state.finalize();
+      } else if (token.symbol == '*') {
+        context.transition(emptyContext, '~');
+        emptyContext.transition(context, '~');
+      } else if (token.symbol == '+') {
+        emptyContext = nfa.startState();
+        context = emptyContext;
+      }
+    } else {
+      var nested = RegexParser.parse(token.content);
+      
     }
   }
   return nfa;
@@ -26,27 +32,23 @@ RegexParser.parse = function(regex) {
 RegexParser.tokenize = function(regex) {
   var tokens = [];
   var stack = [];
-  var tokenCtr = 0;
   for (var i = 0; i < regex.length; i++) {
     var symbol = regex.charAt(i);
     if (symbol === '(') {
       stack.push(i);
     } else if (symbol == ')') {
       var openPar = stack.pop();
-      if (stack.length === 0) {
-        var insideParens = regex.substring(openPar+1, i);
-        tokens[tokenCtr] = new Token('regex',insideParens);
-        tokenCtr++;
+      if (!stack.length) {
+        var insideParens = regex.substring(openPar + 1, i);
+        tokens.push(new Token('regex',insideParens));
       }
     } else {
-      if (stack.length === 0) {
-        tokens[tokenCtr] = new Token('symbol', symbol);
-        tokenCtr++;
-      } 
+      if (!stack.length) {
+        tokens.push(new Token('symbol', symbol));
+      }
     }
-
   }
-  return tokens;  
+  return tokens;
 }
 
 
@@ -71,6 +73,16 @@ function NFA(alphabet) {
 
 NFA.prototype.startState = function() {
   return this.states['q0'];
+}
+
+NFA.prototype.finalStates = function() {
+  var finalStates = [];
+  for (var state in this.states) {
+    if (this.states[state].final) {
+      finalStates.push(this.states[state]);
+    }
+  }
+  return finalStates;
 }
 
 NFA.prototype.addState = function(label) {
