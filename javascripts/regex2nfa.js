@@ -1,5 +1,6 @@
 function RegexParser() {}
 RegexParser.parse = function(regex) {
+  TokenizedRegex(regex);
   var nfa = new NFA('ab');
   var emptyContext = nfa.startState();
   var context = emptyContext;
@@ -17,6 +18,45 @@ RegexParser.parse = function(regex) {
     }
   }
   return nfa;
+}
+
+
+
+
+
+function TokenizedRegex(regex) {
+  this.tokens = [];
+  var stack = [];
+  var tokenCtr = 0;
+  for (var i = 0; i < regex.length; i++) {
+    var symbol = regex.charAt(i);
+    if (symbol === '(') {
+      stack.push(i);
+    } else if (symbol == ')') {
+      var openPar = stack.pop();
+      if (stack.length === 0) {
+        var insideParens = regex.substring(openPar+1, i);
+        this.tokens[tokenCtr] = new Token('regex',insideParens);
+        tokenCtr++;
+      }
+    } else {
+      if (stack.length === 0) {
+        this.tokens[tokenCtr] = new Token('symbol', symbol);
+        tokenCtr++;
+      } 
+    }
+
+  }
+  console.log(this.tokens);
+}
+
+
+
+
+
+function Token(type, content) {
+  this.type = type; 
+  this.content = content;
 }
 
 
