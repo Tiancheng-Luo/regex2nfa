@@ -1,4 +1,4 @@
-var regex = "a*b(ab)*";
+var regex = "a*(ab+b(ba)*)";
 var nfa = RegexParser.parse(regex);
 
 for (var state in nfa.states) {

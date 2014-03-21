@@ -1,6 +1,5 @@
 function RegexParser() {}
 RegexParser.parse = function(regex) {
-  console.log(RegexParser.tokenize(regex));
   var nfa = new NFA('ab');
   var emptyContext = nfa.startState();
   var context = emptyContext.finalize();
@@ -15,16 +14,35 @@ RegexParser.parse = function(regex) {
         context.unfinalize().transition(emptyContext, '~');
         emptyContext.transition(state, token.content);
         context = state.finalize();
-      } else if (token.symbol == '*') {
+      } else if (token.content == '*') {
         context.transition(emptyContext, '~');
         emptyContext.transition(context, '~');
-      } else if (token.symbol == '+') {
+      } else if (token.content == '+') {
         emptyContext = nfa.startState();
         context = emptyContext;
       }
     } else {
       var nested = RegexParser.parse(token.content);
-      
+      var newStates = [];
+      for (var j = 0; j < nested.stateCount; j++) {
+        newStates.push(nfa.addState());
+      }
+      var finalState = nfa.addState();
+      for (var state in nested.states) {
+        var index = parseInt(state.substring(1));
+        for (var transition in nested.states[state].transitions) {
+          for (var j = 0; j < nested.states[state].transitions[transition].length; j++) {
+            var destinationIndex = parseInt(nested.states[state].transitions[transition][j].label.substring(1));
+            newStates[index].transition(newStates[destinationIndex], transition);
+          }
+        }
+        if (nested.states[state].final) {
+          newStates[index].unfinalize().transition(finalState, '~');
+        }
+      }
+      context.unfinalize().transition(newStates[0], '~');
+      emptyContext = newStates[0];
+      context = finalState.finalize();
     }
   }
   return nfa;
