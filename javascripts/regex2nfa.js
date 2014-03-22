@@ -30,13 +30,15 @@ RegexParser.parse = function(regex) {
       var finalState = nfa.addState();
       for (var state in nested.states) {
         var index = parseInt(state.substring(1));
-        for (var transition in nested.states[state].transitions) {
-          for (var j = 0; j < nested.states[state].transitions[transition].length; j++) {
-            var destinationIndex = parseInt(nested.states[state].transitions[transition][j].label.substring(1));
-            newStates[index].transition(newStates[destinationIndex], transition);
+        state = nested.states[state];
+        for (var symbol in state.transitions) {
+          transitions = state.transitions[symbol];
+          for (var j = 0; j < transitions.length; j++) {
+            var destinationIndex = parseInt(transitions[j].label.substring(1));
+            newStates[index].transition(newStates[destinationIndex], symbol);
           }
         }
-        if (nested.states[state].final) {
+        if (state.final) {
           newStates[index].unfinalize().transition(finalState, '~');
         }
       }
