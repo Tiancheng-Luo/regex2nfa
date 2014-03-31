@@ -14,14 +14,12 @@ RegexParser.parse = function(regex) {
         nfa.getStartState().transition(state.finalize(), token.content);
         concatStack.push(nfa);
       } else if (token.content == '*') {
-        var nfa = new NFA(alphabet);
-        var popped = concatStack.pop();
-        var finalStates = popped.getFinalStates();
-        var states = nfa.concatenate(popped);
-        nfa.getStartState().finalize().transition(states[popped.getStartState().label], '~');
+        var nfa = concatStack.pop();
+        var finalStates = nfa.getFinalStates();
         for (var j = 0; j < finalStates.length; j++) {
-          states[finalStates[j].label].transition(nfa.getStartState(), '~');
+          finalStates[j].transition(nfa.getStartState(), '~');
         }
+        nfa.getStartState().finalize();
         concatStack.push(nfa);
       } else if (token.content == '+') {
         var nfa = RegexParser.combine(concatStack);
