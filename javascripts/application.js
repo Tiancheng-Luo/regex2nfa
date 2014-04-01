@@ -1,4 +1,4 @@
-var regex = "a*(ab+b(ba)*(a+ba*b(b*+a*)*)*)*";
+var regex = "ababa*";
 var nfa = RegexParser.parse(regex);
 
 for (var state in nfa.states) {
@@ -14,3 +14,7 @@ for (var state in nfa.states) {
   }
   console.groupEnd();
 }
+
+console.info('abaab', nfa.accepts('abaab'));
+console.info('ababa', nfa.accepts('ababa'));
+console.info('ababaaa', nfa.accepts('ababaaa'));
