@@ -1,3 +1,50 @@
+describe('State', function() {
+  describe('creating new State', function() {
+    var state = new State('q0');
+
+    it('has correct state label', function() {
+      expect(state.label).toEqual('q0');
+    });
+
+    it('has correct initial transitions', function() {
+      expect(state.transitions).toEqual({});
+    });
+
+    it('has correct final attribute value', function() {
+      expect(state.final).toEqual(false);
+    });
+  });
+
+  describe('adding state transition', function() {
+    var q0 = new State('q0');
+    var q1 = new State('q1');
+    q0.transition(q1, 'a');
+
+    it('adds destination state to corresponding transitions array', function() {
+      var expected = { 'a': [ new State('q1') ] };
+      expect(q0.transitions).toEqual(expected);
+    });
+  });
+
+  describe('finalizing the state', function() {
+    var state = new State('q0');
+    state.finalize();
+
+    it('sets the state final attribute to true', function() {
+      expect(state.final).toEqual(true);
+    });
+  });
+
+  describe('unfinalizing the state', function() {
+    var state = new State('q1');
+    state.finalize().unfinalize();
+
+    it('sets the state final attribute to false', function() {
+      expect(state.final).toEqual(false);
+    });
+  });
+});
+
 describe('NFA', function() {
   describe('creating new NFA', function() {
     var nfa = new NFA('ab');
