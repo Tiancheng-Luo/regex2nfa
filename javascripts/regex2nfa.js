@@ -1,13 +1,13 @@
 function RegexParser() {}
-RegexParser.parse = function(regex) {
-  if (!RegexParser.validate(regex)) {
+RegexParser.parse = function(regex, alphabet) {
+  alphabet = alphabet || 'ab';
+  if (!RegexParser.validate(regex, alphabet)) {
     throw new ParsingError('The RegEx you provided is invalid.');
     return false;
   }
 
   regex = RegexParser.clean(regex);
   var tokens = RegexParser.tokenize(regex);
-  var alphabet = 'ab';
   var concatStack = [];
   var unionStack = [];
 
@@ -92,7 +92,7 @@ RegexParser.combine = function(nfas) {
   return null;
 }
 
-RegexParser.validate = function(regex) {
+RegexParser.validate = function(regex, alphabet) {
   return true;
 }
 
