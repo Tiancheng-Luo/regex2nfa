@@ -177,6 +177,7 @@ NFA.prototype.absorb = function(nfa) {
 
 NFA.prototype.accepts = function(input, state) {
   state = state || this.getStartState();
+  this.dispatchEvent('yield', { state: state });
   if (input.length) {
     var symbol = input.charAt(0);
     if (symbol in state.transitions) {
@@ -257,7 +258,7 @@ CustomEvent.prototype.dispatchEvent = function(name, data) {
     data = data || {};
     data['target'] = this;
     for (var i = 0; i < this.events[name].length; i++) {
-      this.events[name](data);
+      this.events[name][i](data);
     }
   }
 }
