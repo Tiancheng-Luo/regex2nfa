@@ -14,7 +14,10 @@ RegexParser.parse = function(regex) {
         nfa.getStartState().transition(state.finalize(), token.content);
         concatStack.push(nfa);
       } else if (token.content == '*') {
-        var nfa = concatStack.pop();
+        var nfa = new NFA('ab');
+        var popped = concatStack.pop();
+        var newStates = nfa.absorb(popped);
+        nfa.getStartState().transition(newStates[popped.getStartState().label], '~');
         var finalStates = nfa.getFinalStates();
         for (var j = 0; j < finalStates.length; j++) {
           finalStates[j].transition(nfa.getStartState(), '~');
