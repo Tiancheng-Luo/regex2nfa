@@ -1,5 +1,11 @@
 function RegexParser() {}
 RegexParser.parse = function(regex) {
+  if (!RegexParser.validate(regex)) {
+    throw new ParsingError('The RegEx you provided is invalid.');
+    return false;
+  }
+
+  regex = RegexParser.clean(regex);
   var tokens = RegexParser.tokenize(regex);
   var alphabet = 'ab';
   var concatStack = [];
@@ -84,6 +90,14 @@ RegexParser.combine = function(nfas) {
     return nfa;
   }
   return null;
+}
+
+RegexParser.validate = function(regex) {
+  return true;
+}
+
+RegexParser.clean = function(regex) {
+  return regex;
 }
 
 
@@ -210,3 +224,13 @@ State.prototype.unfinalize = function() {
   this.final = false;
   return this;
 }
+
+
+
+
+
+function ParsingError(message) {
+  this.name = 'ParsingError';
+  this.message = message;
+}
+ParsingError.prototype = Error.prototype;
