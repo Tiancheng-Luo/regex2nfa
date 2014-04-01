@@ -109,6 +109,18 @@ describe('RegexParser', function() {
     it('correctly cleans ab**ba', function() {
       expect(RegexParser.clean('ab**ba')).toEqual('ab*ba');
     });
+
+    it('correctly cleans ab*****ba', function() {
+      expect(RegexParser.clean('ab*****ba')).toEqual('ab*ba');
+    });
+
+    it('correctly cleans *a', function() {
+      expect(RegexParser.clean('*a')).toEqual('a');
+    });
+
+    it('correctly cleans ***a', function() {
+      expect(RegexParser.clean('***a')).toEqual('a');
+    });
   });
 
   describe('parsing regular expressions to NFA', function() {
