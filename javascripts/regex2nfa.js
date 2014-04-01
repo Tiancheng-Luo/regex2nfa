@@ -110,6 +110,7 @@ function NFA(alphabet) {
   this.statesCount = 0;
   this.startState = this.addState();
 }
+NFA.prototype = new CustomEvent();
 
 NFA.prototype.addState = function(label) {
   label = label || this.generateStateLabel();
@@ -223,6 +224,42 @@ State.prototype.finalize = function() {
 State.prototype.unfinalize = function() {
   this.final = false;
   return this;
+}
+
+
+
+
+
+
+function CustomEvent() {
+  this.events = {};
+}
+
+CustomEvent.prototype.addEventListener = function(name, callback) {
+  if (!(name in this.events)) {
+    this.events[name] = [];
+  }
+  this.events[name].push(callback);
+}
+
+CustomEvent.prototype.removeEventListener = function(name, callback) {
+  if (name in this.events) {
+    for (var i = 0; i < this.events[name].length; i++) {
+      if (this.events[name][i] === callback) {
+        this.events[name].splice(i, 1);
+      }
+    }
+  }
+}
+
+CustomEvent.prototype.dispatchEvent = function(name, data) {
+  if (name in this.events) {
+    data = data || {};
+    data['target'] = this;
+    for (var i = 0; i < this.events[name].length; i++) {
+      this.events[name](data);
+    }
+  }
 }
 
 
