@@ -235,11 +235,12 @@ NFA.prototype.absorb = function(nfa) {
 
 NFA.prototype.accepts = function(input, state) {
   state = state || this.getStartState();
-  this.dispatchEvent('yield', { state: state });
+  this.dispatchEvent('yield', { state: state, type: 'destination' });
   if (input.length) {
     var symbol = input.charAt(0);
     if (symbol in state.transitions) {
       for (var i = 0; i < state.transitions[symbol].length; i++) {
+        this.dispatchEvent('yield', { state: state, type: 'source' });
         if (this.accepts(input.substring(1), state.transitions[symbol][i])) {
           return true;
         }
@@ -247,6 +248,7 @@ NFA.prototype.accepts = function(input, state) {
     }
     if ('~' in state.transitions) {
       for (var i = 0; i < state.transitions['~'].length; i++) {
+        this.dispatchEvent('yield', { state: state, type: 'source' });
         if (this.accepts(input, state.transitions['~'][i])) {
           return true;
         }
