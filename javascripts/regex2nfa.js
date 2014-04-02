@@ -153,6 +153,7 @@ RegexParser.clean = function(regex) {
 
 
 
+
 function NFA(alphabet) {
   this.alphabet = alphabet;
   this.states = {};
