@@ -225,23 +225,24 @@ NFA.prototype.absorb = function(nfa) {
   return newStates;
 }
 
-NFA.prototype.accepts = function(input, state) {
+NFA.prototype.accepts = function(input, state, path) {
   state = state || this.getStartState();
-  this.dispatchEvent('yield', { input: input, state: state, type: 'destination' });
+  path = path || [];
+  path.push(state)
+  this.dispatchEvent('yield', { input: input, state: state });
+  this.dispatchEvent('yield-path', { path: path });
   if (input.length) {
     var symbol = input.charAt(0);
     if (symbol in state.transitions) {
       for (var i = 0; i < state.transitions[symbol].length; i++) {
-        this.dispatchEvent('yield', { input: input, state: state, type: 'source' });
-        if (this.accepts(input.substring(1), state.transitions[symbol][i])) {
+        if (this.accepts(input.substring(1), state.transitions[symbol][i], path)) {
           return true;
         }
       }
     }
     if ('~' in state.transitions) {
       for (var i = 0; i < state.transitions['~'].length; i++) {
-        this.dispatchEvent('yield', { input: input, state: state, type: 'source' });
-        if (this.accepts(input, state.transitions['~'][i])) {
+        if (this.accepts(input, state.transitions['~'][i], path)) {
           return true;
         }
       }
