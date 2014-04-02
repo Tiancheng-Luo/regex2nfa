@@ -293,15 +293,19 @@ describe('NFA', function() {
     var q5 = nfa.addState();
     var q6 = nfa.addState();
     var q7 = nfa.addState();
+    var q8 = nfa.addState();
 
     q0.transition(q1, 'a');
     q1.transition(q2, '~');
-    q2.transition(q3, 'b').transition(q4, '~');
-    q3.transition(q2, '~').transition(q4, '~');
-    q4.transition(q5, 'b');
-    q5.transition(q6, '~' );
-    q6.transition(q7, 'a');
-    q7.finalize();
+    q2.transition(q3, '~').transition(q5, '~');
+    q3.transition(q4, 'b');
+    q4.transition(q2, '~').transition(q5, '~');
+    q5.transition(q6, 'b' );
+    q6.transition(q7, '~');
+    q7.transition(q8, 'a');
+    q8.finalize();
+
+    console.log(nfa);
 
     it('accepts aba', function() {
       expect(nfa.accepts('aba')).toEqual(true);
@@ -312,7 +316,7 @@ describe('NFA', function() {
     });
 
     it('accepts abbbbbba', function() {
-      expect(nfa.accepts('abba')).toEqual(true);
+      expect(nfa.accepts('abbbbbba')).toEqual(true);
     });
 
     it('does not accept aa', function() {

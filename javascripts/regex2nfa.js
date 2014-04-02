@@ -232,18 +232,13 @@ NFA.prototype.accepts = function(input, state, path) {
   this.dispatchEvent('yield', { input: input, state: state });
   this.dispatchEvent('yield-path', { path: path });
   if (input.length) {
-    var symbol = input.charAt(0);
-    if (symbol in state.transitions) {
-      for (var i = 0; i < state.transitions[symbol].length; i++) {
-        if (this.accepts(input.substring(1), state.transitions[symbol][i], path)) {
-          return true;
-        }
-      }
-    }
-    if ('~' in state.transitions) {
-      for (var i = 0; i < state.transitions['~'].length; i++) {
-        if (this.accepts(input, state.transitions['~'][i], path)) {
-          return true;
+    for (var symbol in state.transitions) {
+      var actualSymbol = symbol == '~' ? '' : symbol;
+      if (input.indexOf(actualSymbol) == 0) {
+        for (var i = 0; i < state.transitions[symbol].length; i++) {
+          if (this.accepts(input.substring(actualSymbol.length), state.transitions[symbol][i], path)) {
+            return true;
+          }
         }
       }
     }
