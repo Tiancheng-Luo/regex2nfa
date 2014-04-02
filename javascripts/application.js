@@ -1,4 +1,4 @@
-var regex = "ababa*";
+var regex = "ab**ab";
 var nfa = RegexParser.parse(regex);
 
 for (var state in nfa.states) {
