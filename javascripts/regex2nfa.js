@@ -92,7 +92,7 @@ RegexParser.combine = function(nfas) {
   return null;
 }
 
-RegexParser.validate = function(regex, symbols) {
+RegexParser.validate = function(regex, alphabet) {
   var parenthesisStack = [];
   var characterStack = [];
 
@@ -102,40 +102,34 @@ RegexParser.validate = function(regex, symbols) {
     
     if (character == "+") {
       if (i - 1 < 0 || i + 1 >= regex.length) {
-        console.log("Operator is misplaced.");
         return false;
       } else {
         var prevChar = regex.charAt(i-1);
         var nextChar = regex.charAt(i+1);
 
-        if (["a", "b"].indexOf(nextChar) == -1 || nextChar == ")" || nextChar == "+" || 
-            ["a", "b"].indexOf(prevChar) == -1 || prevChar == "(" || prevChar == "+"
+        if ((["a", "b"].indexOf(nextChar) == -1 && nextChar != "*") || nextChar == ")" || nextChar == "+" || 
+            (["a", "b"].indexOf(prevChar) == -1 && prevChar != "*") || prevChar == "(" || prevChar == "+"
             ) {
-          console.log("Operator is misplaced.");
           return false;
         }
       }
     } else if (character == "*") {
       if (characterStack[characterStack.length-1] == "+") {
-        console.log("Misplaced '*'.");
         return false;
       }
     } else if (character == "(") {
       parenthesisStack.push(character);
     } else if (character == ")") {
       if (parenthesisStack.length == 0) {
-        console.log("Parentheses are not balanced.");
         return false;
       } 
       parenthesisStack.pop();
     } else if (["a", "b"].indexOf(character) == -1){
-      console.log(character + " is not in the alphabet.");
       return false;
     }
   }
 
   if (parenthesisStack.length) {
-    console.log("Parentheses are not balanced.");
     return false;
   }
 
@@ -143,20 +137,17 @@ RegexParser.validate = function(regex, symbols) {
 }
 
 RegexParser.clean = function(regex) {
-  var cleanRegex = "";
+  var finalRegex = "";
 
   for (var i = 0; i < regex.length; i++) {
     var character = regex.charAt(i);
 
-    if (character == "*" && cleanRegex.charAt(i - 1) == "*") {
-      continue;
+    if (!(character == "*" && (finalRegex.charAt(finalRegex.length - 1) == "*" || finalRegex == ""))) {
+      finalRegex += character;
     } 
-
-    cleanRegex += character;
   }
 
-  console.log(cleanRegex);
-  return cleanRegex
+  return finalRegex;
 }
 
 
