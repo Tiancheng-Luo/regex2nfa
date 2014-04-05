@@ -116,8 +116,11 @@ describe('NFA', function() {
 
   describe('deleting a state with a label', function() {
     var nfa = new NFA('ab');
-    nfa.addState();
-    nfa.addState();
+    var q0 = nfa.getStartState();
+    var q1 = nfa.addState();
+    var q2 = nfa.addState();
+    q0.transition(q1, 'a');
+    q2.transition(q1, 'b');
 
     it('returns the deleted state', function() {
       var state = nfa.removeState('q1');
@@ -135,6 +138,11 @@ describe('NFA', function() {
 
     it('decrements the NFA states count', function() {
       expect(nfa.statesCount).toEqual(2);
+    });
+
+    it('removes transitions going to the state', function() {
+      expect(q0.transitions).toEqual({});
+      expect(q1.transitions).toEqual({});
     });
   });
 
