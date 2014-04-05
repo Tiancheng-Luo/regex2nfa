@@ -114,21 +114,29 @@ describe('NFA', function() {
     });
   });
 
-  // describe('deleting a state with a label', function() {
-  //   var nfa = new NFA('ab');
-  //   nfa.addState();
-  //   nfa.addState();
+  describe('deleting a state with a label', function() {
+    var nfa = new NFA('ab');
+    nfa.addState();
+    nfa.addState();
 
-  //   it('returns the deleted state', function() {
-  //     var state = nfa.removeState('q1');
-  //     var expected = new State('q1');
-  //     expect(state).toEqual(expected);
-  //   });
+    it('returns the deleted state', function() {
+      var state = nfa.removeState('q1');
+      var expected = new State('q1');
+      expect(state).toEqual(expected);
+    });
 
-  //   it('removes the deleted state from the NFA', function() {
+    it('removes the deleted state from the NFA', function() {
+      var expected = {
+        'q0': new State('q0'),
+        'q2': new State('q2')
+      };
+      expect(nfa.states).toEqual(expected);
+    });
 
-  //   });
-  // });
+    it('decrements the NFA states count', function() {
+      expect(nfa.statesCount).toEqual(2);
+    });
+  });
 
   describe('getting a state with a label', function() {
     var nfa = new NFA('ab');

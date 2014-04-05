@@ -161,6 +161,16 @@ NFA.prototype.getState = function(label) {
   return this.states[label];
 }
 
+NFA.prototype.removeState = function(label) {
+  if (label in this.states) {
+    var state = this.states[label];
+    delete this.states[label];
+    this.statesCount--;
+    return state;
+  }
+  return null;
+}
+
 NFA.prototype.getStartState = function() {
   return this.startState;
 }
