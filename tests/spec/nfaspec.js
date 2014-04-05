@@ -114,6 +114,22 @@ describe('NFA', function() {
     });
   });
 
+  // describe('deleting a state with a label', function() {
+  //   var nfa = new NFA('ab');
+  //   nfa.addState();
+  //   nfa.addState();
+
+  //   it('returns the deleted state', function() {
+  //     var state = nfa.removeState('q1');
+  //     var expected = new State('q1');
+  //     expect(state).toEqual(expected);
+  //   });
+
+  //   it('removes the deleted state from the NFA', function() {
+
+  //   });
+  // });
+
   describe('getting a state with a label', function() {
     var nfa = new NFA('ab');
 
@@ -304,8 +320,6 @@ describe('NFA', function() {
     q6.transition(q7, '~');
     q7.transition(q8, 'a');
     q8.finalize();
-
-    console.log(nfa);
 
     it('accepts aba', function() {
       expect(nfa.accepts('aba')).toEqual(true);

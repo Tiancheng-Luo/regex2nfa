@@ -49,51 +49,51 @@ describe('RegexParser', function() {
 
   describe('validating regular expressions', function() {
     it('validates ababa', function() {
-      expect(RegexParser.validate('ababa')).toEqual(true);
+      expect(RegexParser.validate('ababa', 'ab')).toEqual(true);
     });
 
     it('validates a*b', function() {
-      expect(RegexParser.validate('a*b')).toEqual(true);
+      expect(RegexParser.validate('a*b', 'ab')).toEqual(true);
     });
 
     it('validates a+b', function() {
-      expect(RegexParser.validate('a+b')).toEqual(true);
+      expect(RegexParser.validate('a+b', 'ab')).toEqual(true);
     });
 
     it('validates (aba+ba)*', function() {
-      expect(RegexParser.validate('(aba+ba)*')).toEqual(true);
+      expect(RegexParser.validate('(aba+ba)*', 'ab')).toEqual(true);
     });
 
     it('validates a***b', function() {
-      expect(RegexParser.validate('a***b')).toEqual(true);
+      expect(RegexParser.validate('a***b', 'ab')).toEqual(true);
     });
 
     it('validates *a', function() {
-      expect(RegexParser.validate('*a')).toEqual(true);
+      expect(RegexParser.validate('*a', 'ab')).toEqual(true);
     });
 
     it('invalidates +', function() {
-      expect(RegexParser.validate('+')).toEqual(false);
+      expect(RegexParser.validate('+', 'ab')).toEqual(false);
     });
 
     it('invalidates a+', function() {
-      expect(RegexParser.validate('a+')).toEqual(false);
+      expect(RegexParser.validate('a+', 'ab')).toEqual(false);
     });
 
     it('invalidates +a', function() {
-      expect(RegexParser.validate('+a')).toEqual(false);
+      expect(RegexParser.validate('+a', 'ab')).toEqual(false);
     });
 
     it('invalidates a++b', function() {
-      expect(RegexParser.validate('a++b')).toEqual(false);
+      expect(RegexParser.validate('a++b', 'ab')).toEqual(false);
     });
 
     it('invalidates (ab', function() {
-      expect(RegexParser.validate('(ab')).toEqual(false);
+      expect(RegexParser.validate('(ab', 'ab')).toEqual(false);
     });
 
     it('invalidates ab)', function() {
-      expect(RegexParser.validate('ab)')).toEqual(false);
+      expect(RegexParser.validate('ab)', 'ab')).toEqual(false);
     });
   });
 
