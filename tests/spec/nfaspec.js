@@ -210,6 +210,15 @@ describe('NFA', function() {
       nfa.statesCount++;
       expect(nfa.generateStateLabel()).toEqual('q2');
     });
+
+    it('generates another state if state label is already taken', function() {
+      nfa.states['q2'] =  new State('q2');
+      nfa.statesCount++;
+      delete nfa.states['q1'];
+      nfa.statesCount--;
+
+      expect(nfa.generateStateLabel()).toEqual('q3');
+    });
   });
 
   describe('NFA concatenation', function() {
